@@ -96,3 +96,23 @@ void Rover::read_sonars(void)
         obstacle.turn_angle = 0;
     }
 }
+
+void Rover::read_external_data(void)
+{
+    uint8_t * local_buffer;
+    local_buffer = new uint8_t[19];
+
+//    virtual uint8_t read(uint8_t addr, uint8_t len, uint8_t* data) = 0;
+
+//    AP_HAL::OwnPtr<AP_HAL::I2CDevice> arduino = hal.i2c_mgr->get_device(1, 7);
+//    if( arduino->transfer(nullptr, 0, local_buffer, i2c_buffer_length) )
+    if( hal.i2c->read(7, i2c_buffer_length, local_buffer) )
+    {
+        for(uint32_t i = 0; i < i2c_buffer_length; i ++)
+            i2c_buffer[i] = local_buffer[i];
+        new_data_received = true;
+    }
+
+    delete local_buffer;
+}
+

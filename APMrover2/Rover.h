@@ -365,6 +365,12 @@ private:
 
     float distance_past_wp; // record the distance we have gone past the wp
 
+    //buffer for reading external sensor information via i2c
+    static const uint32_t i2c_buffer_length = 19;
+    char i2c_buffer[ i2c_buffer_length ];
+    double test_variable;
+    bool new_data_received = false;
+
 private:
     // private member functions
     void ahrs_update();
@@ -502,6 +508,10 @@ private:
     void do_digicam_configure(const AP_Mission::Mission_Command& cmd);
     void do_digicam_control(const AP_Mission::Mission_Command& cmd);
     void init_capabilities(void);
+
+    void read_external_data(void);
+    void send_external_data(mavlink_channel_t chan);
+    void gcs_send_external_data(void);
 
 public:
     bool print_log_menu(void);

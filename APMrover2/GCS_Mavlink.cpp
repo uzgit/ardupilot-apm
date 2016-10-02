@@ -589,6 +589,12 @@ bool GCS_MAVLINK::try_send_message(enum ap_message id)
         mavlink_msg_mission_item_reached_send(chan, mission_item_reached_index);
         break;
 
+//********************************************************************
+    case MSG_EXTERNAL_DATA:
+        rover.send_external_data(chan);
+        break;
+//********************************************************************
+
     case MSG_RETRY_DEFERRED:
     case MSG_TERRAIN:
     case MSG_OPTICAL_FLOW:
@@ -1406,3 +1412,27 @@ void Rover::gcs_retry_deferred(void)
 {
     gcs_send_message(MSG_RETRY_DEFERRED);
 }
+
+//********************************************************************
+void Rover::send_external_data(mavlink_channel_t chan)
+{
+    test_variable ++;
+    mavlink_msg_external_data_send(chan, test_variable);
+//    mavlink_msg_battery2_send(chan, (uint16_t)test_variable, (uint16_t)test_variable);
+    //gcs_send_text(MAV_SEVERITY_WARNING, i2c_buffer);
+}
+
+void Rover::gcs_send_external_data(void)
+{
+
+    if(new_data_received)
+    {
+        gcs_send_message(MSG_EXTERNAL_DATA);
+//      gcs_send_text(MAV_SEVERITY_INFO, i2c_buffer);
+    }
+
+    new_data_received = false;
+}
+
+//********************************************************************
+
